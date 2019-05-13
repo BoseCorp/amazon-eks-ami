@@ -1,11 +1,11 @@
 {
   "variables": {
-    "aws_region": "us-west-2",
-    "ami_name": "amazon-eks-node-{{timestamp}}",
-    "binary_bucket_region": "us-west-2",
+    "aws_region": "us-east-1",
+    "ami_name": "amazon-eks-node-bose-hardend-{{timestamp}}",
+    "binary_bucket_region": "us-east-1",
     "creator": "{{env `USER`}}",
-    "source_ami_owners": "137112412989",
-    "source_ami_filter_name": "amzn2-ami-minimal-hvm-*",
+    "source_ami_owners": "101603071147",
+    "source_ami_filter_name": "bose-cdo-devops-amazon-linux2-base-hardend.1.1",
     "encrypted": "false",
     "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
@@ -44,7 +44,7 @@
         {
           "device_name": "/dev/xvda",
           "volume_type": "gp2",
-          "volume_size": 4,
+          "volume_size": 8,
           "delete_on_termination": true
         }
       ],
@@ -56,6 +56,8 @@
           "delete_on_termination": true
         }
       ],
+      "subnet_id": "subnet-73740429",
+      "security_group_ids": "sg-8c9c45fc",
       "ssh_username": "ec2-user",
       "ssh_pty": true,
       "encrypt_boot": "{{user `encrypted`}}",

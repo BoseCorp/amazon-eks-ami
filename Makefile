@@ -4,17 +4,17 @@ CNI_VERSION ?= v0.6.0
 CNI_PLUGIN_VERSION ?= v0.7.5
 ARCH ?= x86_64
 BINARY_BUCKET_NAME ?= amazon-eks
-SOURCE_AMI_OWNERS ?= 137112412989
+SOURCE_AMI_OWNERS ?= 602401143452
 
 ifeq ($(ARCH), arm64)
 INSTANCE_TYPE ?= a1.large
 else
-INSTANCE_TYPE ?= m4.large
+INSTANCE_TYPE ?= t3.small
 endif
 
 DATE ?= $(shell date +%Y-%m-%d)
 
-AWS_DEFAULT_REGION ?= us-west-2
+AWS_DEFAULT_REGION ?= us-east-1
 
 T_RED := \e[0;31m
 T_GREEN := \e[0;32m
@@ -36,10 +36,9 @@ k8s: validate
 	$(eval SOURCE_AMI_ID := $(shell aws ec2 describe-images \
 		--output text \
 		--filters \
-			Name=owner-id,Values=$(SOURCE_AMI_OWNERS) \
 			Name=virtualization-type,Values=hvm \
 			Name=root-device-type,Values=ebs \
-			Name=name,Values=amzn2-ami-minimal-hvm-* \
+			Name=name,Values=bose-cdo-devops-amazon-linux2-base-hardend.1.1 \
 			Name=architecture,Values=$(ARCH) \
 			Name=state,Values=available \
 		--query 'max_by(Images[], &CreationDate).ImageId'))

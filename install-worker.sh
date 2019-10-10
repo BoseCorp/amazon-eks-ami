@@ -58,10 +58,15 @@ sudo yum install -y \
     conntrack \
     curl \
     jq \
+    ec2-instance-connect \
     nfs-utils \
     socat \
     unzip \
     wget
+
+################################################################################
+### Time #######################################################################
+################################################################################
 
 # Make sure Amazon Time Sync Service starts on boot.
 sudo chkconfig chronyd on
@@ -72,6 +77,14 @@ cat <<EOF | sudo tee -a /etc/chrony.conf
 # real-time clock. Note that it can’t be used along with the 'rtcfile' directive.
 rtcsync
 EOF
+
+# If current clocksource is xen, switch to tsc
+if grep --quiet xen /sys/devices/system/clocksource/clocksource0/current_clocksource &&
+  grep --quiet tsc /sys/devices/system/clocksource/clocksource0/available_clocksource; then
+    echo "tsc" | sudo tee /sys/devices/system/clocksource/clocksource0/current_clocksource
+else
+    echo "tsc as a clock source is not applicable, skipping."
+fi
 
 ################################################################################
 ### iptables ###################################################################
@@ -145,12 +158,11 @@ S3_DOMAIN="s3-$BINARY_BUCKET_REGION"
 if [ "$BINARY_BUCKET_REGION" = "us-east-1" ]; then
     S3_DOMAIN="s3"
 fi
-S3_URL_BASE="https://$S3_DOMAIN.amazonaws.com/$BINARY_BUCKET_NAME/$KUBERNETES_VERSION/$KUBERNETES_BUILD_DATE/bin/linux/$ARCH"
+S3_URL_BASE="https://$BINARY_BUCKET_NAME.$S3_DOMAIN.amazonaws.com/$KUBERNETES_VERSION/$KUBERNETES_BUILD_DATE/bin/linux/$ARCH"
 S3_PATH="s3://$BINARY_BUCKET_NAME/$KUBERNETES_VERSION/$KUBERNETES_BUILD_DATE/bin/linux/$ARCH"
 
 BINARIES=(
     kubelet
-    kubectl
     aws-iam-authenticator
 )
 for binary in ${BINARIES[*]} ; do
@@ -170,7 +182,8 @@ done
 sudo rm *.sha256
 
 KUBELET_CONFIG=""
-if [ "$KUBERNETES_VERSION" = "1.10" ] || [ "$KUBERNETES_VERSION" = "1.11" ]; then
+KUBERNETES_MINOR_VERSION=${KUBERNETES_VERSION%.*}
+if [ "$KUBERNETES_MINOR_VERSION" = "1.10" ] || [ "$KUBERNETES_MINOR_VERSION" = "1.11" ]; then
     KUBELET_CONFIG=kubelet-config.json
 else
     # For newer versions use this config to fix https://github.com/kubernetes/kubernetes/issues/74412.
@@ -181,7 +194,11 @@ sudo mkdir -p /etc/kubernetes/kubelet
 sudo mkdir -p /etc/systemd/system/kubelet.service.d
 sudo mv $TEMPLATE_DIR/kubelet-kubeconfig /var/lib/kubelet/kubeconfig
 sudo chown root:root /var/lib/kubelet/kubeconfig
-sudo mv $TEMPLATE_DIR/kubelet.service /etc/systemd/system/kubelet.service
+if [ "$KUBERNETES_MINOR_VERSION" = "1.14" ]; then
+    sudo mv $TEMPLATE_DIR/1.14/kubelet.service /etc/systemd/system/kubelet.service
+else
+    sudo mv $TEMPLATE_DIR/kubelet.service /etc/systemd/system/kubelet.service
+fi
 sudo chown root:root /etc/systemd/system/kubelet.service
 sudo mv $TEMPLATE_DIR/$KUBELET_CONFIG /etc/kubernetes/kubelet/kubelet-config.json
 sudo chown root:root /etc/kubernetes/kubelet/kubelet-config.json

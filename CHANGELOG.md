@@ -1,5 +1,91 @@
 # Changelog
 
+### AMI Release v20190927
+* amazon-eks-node-1.14-v20190927
+* amazon-eks-gpu-node-1.14-v20190927
+* amazon-eks-node-1.13-v20190927
+* amazon-eks-gpu-node-1.13-v20190927
+* amazon-eks-node-1.12-v20190927
+* amazon-eks-gpu-node-1.12-v20190927
+* amazon-eks-node-1.11-v20190927
+* amazon-eks-gpu-node-1.11-v20190927
+
+Changes:
+* 0f11f6c Add G4DN instance family to node group template
+* ade31b0 Add support for g4 instance family
+* d9147f1 sync nodegroup template to latest available
+
+### AMI Release v20190906
+* amazon-eks-node-1.14-v20190906
+* amazon-eks-gpu-node-1.14-v20190906
+* amazon-eks-node-1.13-v20190906
+* amazon-eks-gpu-node-1.13-v20190906
+* amazon-eks-node-1.12-v20190906
+* amazon-eks-gpu-node-1.12-v20190906
+* amazon-eks-node-1.11-v20190906
+* amazon-eks-gpu-node-1.11-v20190906
+
+Changes:
+* c1ae2f3 Adding new directory and file for 1.14 and above by removing --allow-privileged=true flag (#327)
+* 5335ea8 add support for me-south-1 region (#322)
+* c4e03c1 Update list of instance types (#320)
+* 389f4ba update S3_URL_BASE environment variable in install-worker.sh
+
+Kubernetes Changes:
+* Kubelet patches with [HTTP2-cve](https://nvd.nist.gov/vuln/detail/CVE-2019-9512)
+* Kubelet patched with fix for https://github.com/kubernetes/kubernetes/issues/78164
+
+### AMI Release v20190814
+* amazon-eks-node-1.13-v20190814
+* amazon-eks-gpu-node-1.13-v20190814
+* amazon-eks-node-1.13-v20190814
+* amazon-eks-gpu-node-1.13-v20190814
+* amazon-eks-node-1.13-v20190814
+* amazon-eks-gpu-node-1.13-v20190814
+#### Changes
+* 0468404 change the amiName pattern to use minor version (#307)
+* 19ff806 2107 allow private ssh when building (#303)
+* 2b9b501 add support for ap-east-1 region (#305)
+* ccae017 Fix t3a.small limit
+* f409acd Add new m5 and r5 instances
+* 8bbf269 Add c5.12xlarge and c5.24xlarge instances
+* 1f83c10 refactor packer variables
+* 41f4dd9 Install ec2-instance-connect
+* a40bd46 Added CHANGELOG for v20190701
+
+
+
+### amazon-eks-node-1.13-v20190701 | amazon-eks-node-1.12-v20190701 | amazon-eks-node-1.11-v20190701 | amazon-eks-node-1.10-v20190701 | amazon-eks-gpu-node-1.13-v20190701 | amazon-eks-gpu-node-1.12-v20190701 | amazon-eks-gpu-node-1.11-v20190701 | amazon-eks-gpu-node-1.10-v20190701
+
+Note: The AMI no longer contains kubectl. If you rely on kubectl being present, you can download it from the S3 bucket `s3://amazon-eks/`
+
+* ca61cc2 remove kubectl dependency (#295)
+* 400dd58 Update eks-log-collector.sh URL on readme
+* e4fe057 Moving log collector script to Amazon eks ami repo (#243)
+* e8b50ba add changelog for 20190614
+
+### amazon-eks-node-1.13-v20190614 | amazon-eks-node-1.12-v20190614 | amazon-eks-node-1.11-v20190614 | amazon-eks-node-1.10-v20190614 | amazon-eks-gpu-node-1.13-v20190614 | amazon-eks-gpu-node-1.12-v20190614 | amazon-eks-gpu-node-1.11-v20190614 | amazon-eks-gpu-node-1.10-v20190614
+
+Security Note: These AMIs contain OS(AmazonLinux2) patched for [CVE-2019-11477, CVE-2019-11478, CVE-2019-11479](https://aws.amazon.com/security/security-bulletins/AWS-2019-005/)
+
+Note: This release also publishes first set of worker AMIs for EKS 1.13 launch
+
+* b1726c1 Fix issue with 1.10 build
+* f2525cb Change clocksource only if using xen
+* 16bd031 files/kubelet: specify "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+* 88ca2ac Retry if AWS API returns None (#274)
+* 6f3354a Add a docker daemon restart after custom daemon.json
+* 92e33a8 Making tsc the clock source (#272)
+* eccfa3a Use kubernetes minor version to choose kubelet config
+* 32d2ac4 Update nodegroup values
+* 5b99e15 Add new instance types
+* b061339 Restrict kubelet to only use TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 for tls cipher suites
+* fe39deb add build spec for amazon's internal build process
+* b5a78b9 add options to configure packer/aws binary
+* ac67f2a Allow custom config for docker daemon
+* ca5559a Add ARM support
+* 2caf69b Updated bug-report.md and question.md instructions to currently existing release info location - /etc/eks/release (#242)
+
 ### amazon-eks-node-1.12-v20190329 | amazon-eks-node-1.11-v20190329 | amazon-eks-node-1.10-v20190329
 
 Security Note: These AMIs contain builds of kubectl & CNI patched for [CVE-2019-1002101](https://aws.amazon.com/security/security-bulletins/AWS-2019-003/) and [CVE-2019-9946](https://aws.amazon.com/security/security-bulletins/AWS-2019-003/)
